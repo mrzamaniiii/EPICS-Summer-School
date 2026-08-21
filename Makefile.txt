@@ -1,0 +1,72 @@
+TOP=../..
+
+include $(TOP)/configure/CONFIG
+
+
+# =========================================================
+# Build the IOC application
+# =========================================================
+
+PROD_IOC = streamIoc
+
+
+# =========================================================
+# DBD file
+# =========================================================
+
+DBD += streamIoc.dbd
+
+
+# Base EPICS records
+streamIoc_DBD += base.dbd
+
+
+# =========================================================
+# ASYN + STREAMDEVICE DBD
+# =========================================================
+
+streamIoc_DBD += asyn.dbd
+streamIoc_DBD += stream.dbd
+streamIoc_DBD += drvAsynIPPort.dbd
+
+
+# =========================================================
+# IOC generated registration code
+# =========================================================
+
+streamIoc_SRCS += streamIoc_registerRecordDeviceDriver.cpp
+
+
+# =========================================================
+# Main IOC program
+# =========================================================
+
+streamIoc_SRCS_DEFAULT += streamIocMain.cpp
+streamIoc_SRCS_vxWorks += -nil-
+
+
+# =========================================================
+# SUPPORT LIBRARIES
+#
+# StreamDevice depends on asyn
+# Therefore:
+#
+# stream -> asyn -> EPICS Base
+# =========================================================
+
+streamIoc_LIBS += stream
+streamIoc_LIBS += asyn
+
+
+# =========================================================
+# EPICS BASE LIBRARIES
+# =========================================================
+
+streamIoc_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+
+# =========================================================
+# BUILD RULES
+# =========================================================
+
+include $(TOP)/configure/RULES
